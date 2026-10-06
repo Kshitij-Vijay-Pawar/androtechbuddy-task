@@ -1,25 +1,19 @@
 import { getProduct } from "@/app/api/api";
-import Card from "@/app/components/Card";
-import useCartStore from "@/app/store/cart";
-
-interface Product {
-  id: string;
-  name: string;
-  title: string;
-  price: string | number;
-  image: string;
-}
+import Hero from "@/app/components/Hero";
+import ProductCatalog from "@/app/components/ProductCatalog";
 
 export default async function Home() {
   const products = await getProduct();
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {products.map((product: Product) => (
-        <Card key={product.id} product={product} />
-      ))}
-
-
+    <div className="flex flex-col min-h-screen">
+      <Hero />
+      <ProductCatalog
+        
+        initialProducts={products}
+        title="Featured Collection"
+        subtitle="Browse through our high quality selection with real-time instant search and category filtering."
+      />
     </div>
   );
 }

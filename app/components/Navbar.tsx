@@ -1,44 +1,72 @@
-import { navigate } from "next/dist/client/components/segment-cache/navigation";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { ShoppingBag, Sparkles, Menu, X, ArrowRight } from "lucide-react";
 import useCartStore from "../store/cart";
 
-const navbarLinks = [
-    { name: "Home", href: "/" },
-    { name: "Products", href: "/products" },
-];
 
 export default function Navbar() {
-    return (
-        <nav className="bg-pink-50 p-4 px-12 flex items-center justify-between">
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const cartItems = useCartStore((state) => state.cartItems);
 
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="90" height="30" fill="none" viewBox="0 0 90 30"><g clip-path="url(#clip0_57_161)"><path fill="#950EDB" fill-rule="evenodd" d="M56.923 6.61a1.762 1.762 0 0 1 1.787-1.78h1.258V2.213A1.937 1.937 0 0 1 61.892 0a1.946 1.946 0 0 1 1.863 1.391c.08.266.1.547.06.822V4.83h4.09a1.77 1.77 0 0 1 1.656 1.095 1.787 1.787 0 0 1-1.655 2.463h-4.09v6.303c0 3.073 1.714 4.644 4.09 4.644a1.804 1.804 0 0 1 1.801 1.798 1.797 1.797 0 0 1-1.802 1.799c-4.512 0-7.937-3.176-7.937-8.241V8.389H58.71a1.794 1.794 0 0 1-1.787-1.78ZM41.179 27.656v-6.845a8.695 8.695 0 0 0 5.794 2.164c5.027 0 8.833-4.085 8.833-9.256 0-5.17-3.806-9.255-8.833-9.255a8.535 8.535 0 0 0-5.794 2.197V6.42a1.94 1.94 0 0 0-3.19-1.192 1.94 1.94 0 0 0-.65 1.192v21.237a1.94 1.94 0 0 0 3.191 1.192 1.94 1.94 0 0 0 .65-1.192Zm5.377-19.632c3 0 5.377 2.445 5.377 5.695 0 3.25-2.376 5.695-5.377 5.695s-5.377-2.445-5.377-5.695v-.247c.107-3.105 2.376-5.448 5.377-5.448Zm-29.204 5.666a9.318 9.318 0 0 1 1.478-4.963 9.284 9.284 0 0 1 3.897-3.401 9.256 9.256 0 0 1 9.84 1.293 2.02 2.02 0 0 1 .695 1.451 2 2 0 0 1-.56 1.398l-5.345 6.38a1.612 1.612 0 0 1-1.322.628 1.71 1.71 0 0 1-1.673-1.055 1.719 1.719 0 0 1-.13-.686 1.57 1.57 0 0 1 .414-1.151l4.207-4.943a4.251 4.251 0 0 0-2.292-.629c-2.986 0-5.35 2.51-5.35 5.678s2.33 5.678 5.35 5.678a4.975 4.975 0 0 0 3.681-1.572l.213-.176c.45-.377.824-.69 1.456-.69a1.793 1.793 0 0 1 1.337.514 1.804 1.804 0 0 1 .54 1.33 2.03 2.03 0 0 1-.56 1.252 8.638 8.638 0 0 1-6.667 2.902 9.05 9.05 0 0 1-6.556-2.664 9.096 9.096 0 0 1-2.653-6.574ZM9.903 8.339H2.187a1.787 1.787 0 0 1-1.255-.526 1.797 1.797 0 0 1-.009-2.527 1.76 1.76 0 0 1 1.264-.517h11.557a1.756 1.756 0 0 1 1.65 1.099c.089.217.133.45.13.686a1.86 1.86 0 0 1-.557 1.26L5.572 19.056h8.172a1.756 1.756 0 0 1 1.65 1.1A1.797 1.797 0 0 1 15 22.101a1.787 1.787 0 0 1-1.256.525H1.78a1.797 1.797 0 0 1-1.265-.54c-.334-.341-.519-.801-.515-1.279.012-.472.2-.922.524-1.264l9.38-11.205Zm63.188.229a9.233 9.233 0 0 0-1.556 5.13 9.071 9.071 0 0 0 9.232 9.232 9.233 9.233 0 1 0-7.676-14.362Zm7.676-.552c3.063 0 5.367 2.546 5.367 5.681 0 3.102-2.299 5.681-5.367 5.681s-5.366-2.545-5.366-5.68c0-3.136 2.303-5.682 5.366-5.682Z" clip-rule="evenodd" /></g><defs><clipPath id="clip0_57_161"><path fill="#fff" d="M0 0h90v30H0z" /></clipPath></defs></svg>
-            </div>
+  const totalItemsCount = cartItems.reduce(
+    (total, item) => total + (item.quantity || 1),
+    0
+  );
 
-            <div className="flex items-center gap-4">
-                <ul className="flex space-x-4">
-                    {navbarLinks.map((link) => (
-                        <li key={link.name}>
-                            <a
-                                href={link.href}
-                                className="text-black hover:text-black/50 transition"
-                            >
-                                {link.name}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-                <div
-                    onClick={() => {Router("/cart")}}
-                 className="relative flex items-center justify-center w-8 h-8 rounded-full bg-orange-200 text-black cursor-pointer">
-                    {useCartStore.getState().cartItems.length === 0 && (<svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="16.5" cy="18.5" r="1.5" />
-                        <circle cx="9.5" cy="18.5" r="1.5" />
-                        <path d="M18 16H8a1 1 0 0 1-.958-.713L4.256 6H3a1 1 0 0 1 0-2h2a1 1 0 0 1 .958.713L6.344 6H21a1 1 0 0 1 .937 1.352l-3 8A1 1 0 0 1 18 16zm-9.256-2h8.563l2.25-6H6.944z" />
-                    </svg>) || (<span>{ useCartStore .getState().cartItems.length }</span>)}
-                </div>
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-xl transition-all">
 
-            </div>
 
-        </nav>
-    );
-}   
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
+          
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 group focus:outline-none"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="90" height="30" fill="none" viewBox="0 0 90 30"><g clip-path="url(#clip0_57_161)"><path fill="#950EDB" fill-rule="evenodd" d="M56.923 6.61a1.762 1.762 0 0 1 1.787-1.78h1.258V2.213A1.937 1.937 0 0 1 61.892 0a1.946 1.946 0 0 1 1.863 1.391c.08.266.1.547.06.822V4.83h4.09a1.77 1.77 0 0 1 1.656 1.095 1.787 1.787 0 0 1-1.655 2.463h-4.09v6.303c0 3.073 1.714 4.644 4.09 4.644a1.804 1.804 0 0 1 1.801 1.798 1.797 1.797 0 0 1-1.802 1.799c-4.512 0-7.937-3.176-7.937-8.241V8.389H58.71a1.794 1.794 0 0 1-1.787-1.78ZM41.179 27.656v-6.845a8.695 8.695 0 0 0 5.794 2.164c5.027 0 8.833-4.085 8.833-9.256 0-5.17-3.806-9.255-8.833-9.255a8.535 8.535 0 0 0-5.794 2.197V6.42a1.94 1.94 0 0 0-3.19-1.192 1.94 1.94 0 0 0-.65 1.192v21.237a1.94 1.94 0 0 0 3.191 1.192 1.94 1.94 0 0 0 .65-1.192Zm5.377-19.632c3 0 5.377 2.445 5.377 5.695 0 3.25-2.376 5.695-5.377 5.695s-5.377-2.445-5.377-5.695v-.247c.107-3.105 2.376-5.448 5.377-5.448Zm-29.204 5.666a9.318 9.318 0 0 1 1.478-4.963 9.284 9.284 0 0 1 3.897-3.401 9.256 9.256 0 0 1 9.84 1.293 2.02 2.02 0 0 1 .695 1.451 2 2 0 0 1-.56 1.398l-5.345 6.38a1.612 1.612 0 0 1-1.322.628 1.71 1.71 0 0 1-1.673-1.055 1.719 1.719 0 0 1-.13-.686 1.57 1.57 0 0 1 .414-1.151l4.207-4.943a4.251 4.251 0 0 0-2.292-.629c-2.986 0-5.35 2.51-5.35 5.678s2.33 5.678 5.35 5.678a4.975 4.975 0 0 0 3.681-1.572l.213-.176c.45-.377.824-.69 1.456-.69a1.793 1.793 0 0 1 1.337.514 1.804 1.804 0 0 1 .54 1.33 2.03 2.03 0 0 1-.56 1.252 8.638 8.638 0 0 1-6.667 2.902 9.05 9.05 0 0 1-6.556-2.664 9.096 9.096 0 0 1-2.653-6.574ZM9.903 8.339H2.187a1.787 1.787 0 0 1-1.255-.526 1.797 1.797 0 0 1-.009-2.527 1.76 1.76 0 0 1 1.264-.517h11.557a1.756 1.756 0 0 1 1.65 1.099c.089.217.133.45.13.686a1.86 1.86 0 0 1-.557 1.26L5.572 19.056h8.172a1.756 1.756 0 0 1 1.65 1.1A1.797 1.797 0 0 1 15 22.101a1.787 1.787 0 0 1-1.256.525H1.78a1.797 1.797 0 0 1-1.265-.54c-.334-.341-.519-.801-.515-1.279.012-.472.2-.922.524-1.264l9.38-11.205Zm63.188.229a9.233 9.233 0 0 0-1.556 5.13 9.071 9.071 0 0 0 9.232 9.232 9.233 9.233 0 1 0-7.676-14.362Zm7.676-.552c3.063 0 5.367 2.546 5.367 5.681 0 3.102-2.299 5.681-5.367 5.681s-5.366-2.545-5.366-5.68c0-3.136 2.303-5.682 5.366-5.682Z" clip-rule="evenodd"/></g><defs><clipPath id="clip0_57_161"><path fill="#fff" d="M0 0h90v30H0z"/></clipPath></defs></svg>
+          </Link>
+
+
+
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-3">
+            {/* Cart Button */}
+            <Link
+              href="/cart"
+              className="relative flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900 text-white hover:bg-violet-600 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-violet-500/20 active:scale-95"
+              aria-label="Shopping Cart"
+            >
+              <div className="relative">
+                <ShoppingBag className="w-4 h-4 text-white" />
+                {totalItemsCount > 0 && (
+                  <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-violet-400 text-slate-950 font-bold text-[10px] flex items-center justify-center animate-scale-in">
+                    {totalItemsCount}
+                  </span>
+                )}
+              </div>
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 md:hidden transition"
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </header>
+  );
+}
